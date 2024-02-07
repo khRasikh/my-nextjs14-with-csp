@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { headers } from "next/headers";
+import Page from "./csp-layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,16 +17,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = headers().get("x-nonce") || "";
-
   return (
     <html lang="en">
-      <Script
-      nonce={nonce}
-      strategy="lazyOnload"
-      data-domain="my-nextjs14-with-csp.vercel.app"
-      src="https://plausible.io/js/script.js"
-    />
+     <head>
+        <Page />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
