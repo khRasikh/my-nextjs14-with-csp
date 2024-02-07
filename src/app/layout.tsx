@@ -23,7 +23,7 @@ export default function RootLayout({
       <Script
       nonce={nonce}
       strategy="lazyOnload"
-      data-domain="nextjs-csp-report-only.vercel.app"
+      data-domain="my-nextjs14-with-csp.vercel.app"
       src="https://plausible.io/js/script.js"
     />
       <body className={inter.className}>{children}</body>
