@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
+const CSPHeaders = `default-src *; script-src 'unsafe-inline' 'unsafe-eval' 'self' https://alcdn.msauth.net; 
+                style-src 'self' https://fonts.googleapis.com; object-src 'none'; base-uri 'self'; 
+                connect-src 'self' https://login.microsoftonline.com https://graph.microsoft.com/v1.0/me; 
+                font-src 'self' https://fonts.googleapis.com; frame-src 'self'; img-src 'self'; 
+                form-action 'self';`
+
 const nextConfig = {
     async headers() {
       return [
@@ -7,8 +13,7 @@ const nextConfig = {
             headers: [
               {
                 key: 'Content-Security-Policy',
-                value:
-                  "default-src 'self'; font-src 'self' 'https://fonts.googleapis.com'; img-src 'self' *.somewhere.com; script-src 'self'",
+                value: CSPHeaders
               },
               {
                 key: 'X-Frame-Options',
