@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
+import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,8 +16,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = headers().get("x-nonce") || "";
+
   return (
     <html lang="en">
+      <Script
+      nonce={nonce}
+      strategy="lazyOnload"
+      data-domain="nextjs-csp-report-only.vercel.app"
+      src="https://plausible.io/js/script.js"
+    />
       <body className={inter.className}>{children}</body>
     </html>
   );
