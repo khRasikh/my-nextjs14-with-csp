@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ExternalScript from "./csp-layout";
+import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,12 +16,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = headers().get('x-nonce') ?? ""
+
   return (
     <html lang="en">
-     <head>
+     <head nonce={nonce}>
         <ExternalScript />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body data-nonce={nonce} className={inter.className}>{children}</body>
     </html>
   );
 }
