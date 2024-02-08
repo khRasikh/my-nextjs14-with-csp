@@ -27,7 +27,11 @@ export function middleware(request: NextRequest) {
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue
   )
- 
+ requestHeaders.set('X-Frame-Options', 'SAMEORIGIN')
+ requestHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), browsing-topics=()')
+ requestHeaders.set('X-Content-Type-Options', 'nosniff')
+ requestHeaders.set('Referrer-Policy', 'origin-when-cross-origin')
+
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
@@ -37,6 +41,9 @@ export function middleware(request: NextRequest) {
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue
   )
- 
+  requestHeaders.set('X-Frame-Options', 'SAMEORIGIN')
+  requestHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), browsing-topics=()')
+  requestHeaders.set('X-Content-Type-Options', 'nosniff')
+  requestHeaders.set('Referrer-Policy', 'origin-when-cross-origin')
   return response
 }
