@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import Script from 'next/script'
  
-export default function Page() {
+export default function ExternalScript() {
   const nonce = headers().get('x-nonce') ?? ""
  
   return (

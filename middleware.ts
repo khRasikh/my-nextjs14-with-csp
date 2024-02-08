@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
- 
+
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const cspHeader = `
@@ -14,36 +14,49 @@ export function middleware(request: NextRequest) {
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
-`
+  `
   // Replace newline characters and spaces
   const contentSecurityPolicyHeaderValue = cspHeader
     .replace(/\s{2,}/g, ' ')
     .trim()
- 
+
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
- 
-  requestHeaders.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  )
- requestHeaders.set('X-Frame-Options', 'SAMEORIGIN')
- requestHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), browsing-topics=()')
- requestHeaders.set('X-Content-Type-Options', 'nosniff')
- requestHeaders.set('Referrer-Policy', 'origin-when-cross-origin')
+  requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+  requestHeaders.set('X-Content-Type-Options', 'nosniff')
+  requestHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  requestHeaders.set('Permissions-Policy', 'geolocation=(self)')
 
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   })
-  response.headers.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue
-  )
-  requestHeaders.set('X-Frame-Options', 'SAMEORIGIN')
-  requestHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), browsing-topics=()')
-  requestHeaders.set('X-Content-Type-Options', 'nosniff')
-  requestHeaders.set('Referrer-Policy', 'origin-when-cross-origin')
+
+  // Adding headers to response
+  response.headers.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('Permissions-Policy', 'geolocation=(self)')
+
   return response
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    {
+      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+      ],
+    },
+  ],
 }

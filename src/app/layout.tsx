@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
-import { headers } from "next/headers";
-import Page from "./csp-layout";
+import ExternalScript from "./csp-layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
      <head>
-        <Page />
+        <ExternalScript />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
