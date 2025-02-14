@@ -24,8 +24,8 @@ jobs:
 
       - name: npm install and build
         run: |
-          npm install 
-          npm build
+          npm run install 
+          npm run build
 
       - name: Copy static files
         run: |
