@@ -22,21 +22,24 @@ jobs:
           node-version: 18
           cache: "npm"
 
-      - name: npm install and build
+      - name: Install dependencies and build
         run: |
-          npm run install 
+          npm install
           npm run build
 
-      - name: Copy static files
+      - name: Prepare standalone output
         run: |
-          cp -R ./public ./.next/standalone/public
-          cp -R ./.next/static ./.next/standalone/.next/static
+          mkdir -p .next/standalone
+          cp -R public .next/standalone/public
+          cp -R .next/static .next/standalone/.next/static
+          cp package.json .next/standalone/package.json
+          cp -R node_modules .next/standalone/node_modules
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: app
-          path: ./.next/standalone
+          path: .next/standalone
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,11 +55,10 @@ jobs:
         with:
           name: app
 
-      - name: "Deploy to Azure Web App"
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: "Production"
           publish-profile: ${{ secrets.PUBLISH_PROFILE }}
           package: .
