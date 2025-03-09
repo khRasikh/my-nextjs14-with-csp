@@ -1,29 +1,25 @@
-name: Deploy to Azure Web App
+# File: .github/workflows/workflow.yml
 
-on:
-  push:
-    branches:
-      - main
+name: Run Azure Login with OIDC
+on: [push]
 
+permissions:
+  id-token: write
+  contents: read
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Azure login
+        uses: azure/login@v2
         with:
-          node-version: '20.x'
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Log in to Azure
-        uses: azure/login@v1
+      - name: Azure CLI script
+        uses: azure/cli@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: webappnextjs14withcsp
-          package: .
+          azcliversion: latest
+          inlineScript: |
+            az account show
